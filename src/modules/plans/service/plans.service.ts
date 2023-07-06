@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { injectable } from "tsyringe";
-import { prisma } from "../../../shared/infra/database/database";
+import { prisma } from "@shared/infra/database/database";
 import { IplansService } from "../dto/plans.dto";
-import { getPagination } from "../../../utils/util";
-import { BaseError } from "../../../errors/Base";
+import { getPagination } from "@utils/util";
+import { BaseError } from "@errors/Base";
 
 @injectable()
 export class PlansService implements IplansService {

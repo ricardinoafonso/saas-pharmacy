@@ -1,11 +1,11 @@
-import { container, inject, singleton } from "tsyringe";
-import { Ilimit, IlimitCreateInput } from "../../dto/limit.dto";
+import { container } from "tsyringe";
+import { IlimitCreateInput } from "../../dto/limit.dto";
 import { LimitService } from "../../service/limit.service";
 import { Request, Response} from "express";
+import { IResponse } from "@shared/DTO/response.dto";
 
-//@singleton()
-export class limitController {
-  //constructor(@inject('limitService') private limitService:Ilimit){}
+
+export class limitController  implements IResponse{
   async create (req: Request, res: Response): Promise<Response>{
     const data = req.body as IlimitCreateInput;
     const limtitContainer = container.resolve(LimitService);

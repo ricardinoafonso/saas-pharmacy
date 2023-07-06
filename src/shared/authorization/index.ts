@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BaseError } from "../../errors/Base";
+import { BaseError } from "@errors/Base";
 import { decode, verify } from "jsonwebtoken";
 import { Prisma } from "@prisma/client";
 

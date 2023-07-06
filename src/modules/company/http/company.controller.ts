@@ -3,8 +3,20 @@ import { Request, Response } from "express";
 import { IcompanyFind } from "../dto/company.dto";
 import { Prisma } from "@prisma/client";
 import { CompanyService } from "../service/company.service";
+import { IResponse } from "@shared/DTO/response.dto";
 
-export class companyController {
+export class companyController implements IResponse{
+  findOne(req: Request , res: Response): Promise<Response> {
+    throw new Error("Method not implemented.");
+  }
+ async findAll(req: Request, res: Response): Promise<Response> {
+    const { page, search, orderBy } = req.query as IcompanyFind;
+    const containerCompany = container.resolve(CompanyService);
+    const result = await containerCompany.findAll(search, page, {
+      [`${orderBy}`]: "desc",
+    });
+    return res.status(200).json(result);
+  }
   async create(req: Request, res: Response): Promise<Response> {
     const data = req.body as Prisma.companyCreateManyUserInput;
     const containerCompany = container.resolve(CompanyService);
@@ -23,14 +35,7 @@ export class companyController {
     );
     return res.status(200).json(result);
   }
-  async find(req: Request, res: Response): Promise<Response> {
-    const { page, search, orderBy } = req.query as IcompanyFind;
-    const containerCompany = container.resolve(CompanyService);
-    const result = await containerCompany.findAll(search, page, {
-      [`${orderBy}`]: "desc",
-    });
-    return res.status(200).json(result);
-  }
+
   async delete(req: Request, res: Response): Promise<Response> {
     const { userId, id } = req.body as Prisma.companyWhereInput;
     const containerCompany = container.resolve(CompanyService);

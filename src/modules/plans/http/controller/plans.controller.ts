@@ -2,8 +2,9 @@ import { container } from "tsyringe";
 import { PlansService } from "../../service/plans.service";
 import { Response, Request } from "express";
 import { IplansCreateInput } from "../../dto/plans.dto";
+import { IResponse } from "@shared/DTO/response.dto";
 
-export class plansController {
+export class plansController implements IResponse {
   async create(req: Request, res: Response): Promise<Response> {
     const data = req.body as IplansCreateInput;
     const PlansContainer = container.resolve(PlansService);

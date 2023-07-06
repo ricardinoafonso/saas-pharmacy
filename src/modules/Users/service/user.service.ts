@@ -1,10 +1,10 @@
-import { inject, injectable } from "tsyringe";
-import { prisma } from "../../../shared/infra/database/database";
+import { injectable } from "tsyringe";
+import { prisma } from "@shared/infra/database/database";
 import { IStatus, IUser } from "../dto/user.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
-import { BaseError } from "../../../errors/Base";
+import { BaseError } from "@errors/Base";
 import { IuserService } from "../dto/services.dto";
-import { getPagination } from "../../../utils/util";
+import { getPagination } from "@utils/util";
 
 @injectable()
 export class UserService implements IuserService {

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { IStatus, IUser } from "../../dto/user.dto";
+import {  IUser } from "../../dto/user.dto";
 import { container } from "tsyringe";
 import { UserService } from "../../service/user.service";
+import { IResponse } from "@shared/DTO/response.dto";
 
-export class UserController {
+export class UserController  implements IResponse{
   async create(req: Request, res: Response): Promise<Response> {
     const data = req.body as IUser;
     const userService = container.resolve(UserService);

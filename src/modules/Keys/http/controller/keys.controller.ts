@@ -1,10 +1,12 @@
+import { KeysService } from "@modules/Keys/service/keys.service";
 import { Prisma } from "@prisma/client";
+import { IResponse } from "@shared/DTO/response.dto";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { KeysService } from "../../service/keys.service";
 
-export class keysControler {
-  async index(req: Request, res: Response): Promise<Response> {
+
+export class keysControler implements IResponse  {
+  async create(req: Request, res: Response): Promise<Response> {
     const { hash, userId } = req.body;
     const data: Prisma.keyCreateManyInput = {
       hash: hash,
