@@ -2,8 +2,16 @@
  Daqui apouco faço um check list .
 
 
- para instalar as dependecias
- npm ci
+## Installation
 
- para gerar o schema do banco de dados
- npx prisma migrate dev
+```bash
+$ npm install
+```
+
+
+## Running the app
+
+```bash
+# development
+$ npm run start
+$ npx prisma migrate dev
