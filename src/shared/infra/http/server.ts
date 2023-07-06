@@ -14,16 +14,20 @@ import plansRouter from "@modules/plans/routes/plans.routes";
 import limitRouter from "@modules/limit/routes/limit.routes";
 const App = Express();
 
-App.use(cors());
+App.use(
+  cors({
+    origin: true,
+  })
+);
 App.use(Express.urlencoded({ extended: true }));
 App.use(Express.json());
 
 App.use("/api-docs", SwaggerUI.serve, SwaggerUI.setup(docs));
 App.use("/api/v1/user", UserRoute);
 App.use("/api/v1/company", companyRouter);
-App.use('/api/v1/key', keyRouter);
-App.use('/api/v1/plans', plansRouter)
-App.use('/api/v1/limit', limitRouter)
+App.use("/api/v1/key", keyRouter);
+App.use("/api/v1/plans", plansRouter);
+App.use("/api/v1/limit", limitRouter);
 
 App.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error instanceof BaseError) {
@@ -37,7 +41,6 @@ App.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  console.log(error);
   return res
     .status(500)
     .json({ message: "Internal server Error", status: 500 });
