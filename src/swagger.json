@@ -1,0 +1,11 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Farmacias Documentation",
+      "description": "This is an API Farmacias",
+      "version": "1.0.0",
+      "contact": {
+        "email":"contact@farmacias.com"
+      }
+}
+}
