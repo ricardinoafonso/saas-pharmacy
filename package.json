@@ -25,12 +25,14 @@
     "nodemon": "^2.0.22",
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.6.3",
-    "tsyringe": "^4.8.0"
+    "tsyringe": "^4.8.0",
+    "winston": "^3.9.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.3.2",
+    "@types/winston": "^2.4.4",
     "prisma": "^4.16.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",

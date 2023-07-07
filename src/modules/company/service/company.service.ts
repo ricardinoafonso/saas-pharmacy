@@ -8,7 +8,7 @@ import { UserService } from "@modules/Users/service/user.service";
 
 @injectable()
 export class CompanyService implements IcompanyService {
-  private readonly ICompanyRepository: PrismaClient;
+  private readonly ICompanyRepository: PrismaClient;  
   constructor(
     @inject("userService") private readonly userService: UserService
   ) {
@@ -28,6 +28,15 @@ export class CompanyService implements IcompanyService {
       where,
     });
     return company;
+  }
+  async updateByRoot(
+    id: number,
+    data: Prisma.companyCreateInput
+  ): Promise<Prisma.companyUpdateInput> {
+    return await this.ICompanyRepository.company.update({
+      data,
+      where: { id },
+    });
   }
   async update(
     where: Prisma.companyWhereInput,
@@ -59,7 +68,7 @@ export class CompanyService implements IcompanyService {
       );
     }
     if (search) {
-      return this.ICompanyRepository.company.findMany({
+      const company = await this.ICompanyRepository.company.findMany({
         skip,
         take,
         orderBy,
@@ -75,9 +84,20 @@ export class CompanyService implements IcompanyService {
         },
         include: { User: true },
       });
+
+      if (!company) {
+        throw new BaseError(
+          "company not found",
+          new Error().stack,
+          " Not more result",
+          404,
+          "service:company:findUserById",
+          "findUserById"
+        );
+      }
     }
 
-    return this.ICompanyRepository.company.findMany({
+    const company = await this.ICompanyRepository.company.findMany({
       skip,
       take,
       orderBy: {
@@ -88,6 +108,35 @@ export class CompanyService implements IcompanyService {
       },
       include: { User: true },
     });
+
+    if (!company) {
+      throw new BaseError(
+        "company not found",
+        new Error().stack,
+        " Not more result",
+        404,
+        "service:company:findUserById",
+        "findUserById"
+      );
+    }
+
+    return company;
+  }
+
+  async findOne(id: number): Promise<Prisma.companyCreateInput | undefined> {
+    const company = await this.ICompanyRepository.company.findFirst({
+      where: { id },
+    });
+    if (!company)
+      throw new BaseError(
+        "company not found",
+        new Error().stack,
+        "verifica o id",
+        404,
+        "service:company:findOne",
+        "id"
+      );
+    return company;
   }
   async findAll(
     search?: string,
@@ -97,16 +146,27 @@ export class CompanyService implements IcompanyService {
     let pageNumber = page === undefined ? 0 : page;
     const { take, skip } = getPagination(pageNumber, 20);
     if (!search) {
-      return await this.ICompanyRepository.company.findMany({
+      const company = await this.ICompanyRepository.company.findMany({
         skip,
         take,
         orderBy: {
           name: "desc",
         },
       });
+      if (!company) {
+        throw new BaseError(
+          "company not found",
+          new Error().stack,
+          " Not more result",
+          404,
+          "service:company:findAll",
+          "FindAll"
+        );
+      }
+      return company;
     }
 
-    return this.ICompanyRepository.company.findMany({
+    const companyPagination = this.ICompanyRepository.company.findMany({
       skip,
       take,
       orderBy,
@@ -120,5 +180,18 @@ export class CompanyService implements IcompanyService {
         ],
       },
     });
+
+    if (!companyPagination) {
+      throw new BaseError(
+        "company not found pagination",
+        new Error().stack,
+        " Not more result",
+        404,
+        "service:company:findAll",
+        "Pagination"
+      );
+    }
+
+    return companyPagination;
   }
 }
