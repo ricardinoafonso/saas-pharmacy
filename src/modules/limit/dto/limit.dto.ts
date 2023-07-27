@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export interface Ilimit {
+export interface Limit {
   create(data: Prisma.limitCreateManyInput): Promise<Prisma.limitCreateManyInput>;
   delete(id: number): Promise<any>;
   update(

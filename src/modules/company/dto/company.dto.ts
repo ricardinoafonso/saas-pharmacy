@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export interface IcompanyService {
+export interface Company {
   create(
     data: Prisma.companyCreateInput
   ): Promise<Prisma.companyCreateManyUserInput>;

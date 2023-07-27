@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export interface Ikeys {
+export interface Keys {
   create(data: Prisma.keyCreateManyInput): Promise<Prisma.keyCreateManyInput>;
   findAll(): Promise<Prisma.keyCreateManyInput[]>;
   findOne(id?: number): Promise<IkeysDto | undefined>;

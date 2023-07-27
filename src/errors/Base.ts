@@ -1,19 +1,20 @@
-export class BaseError extends Error {
-  public action: string;
-  public statusCode: number;
-  public errorLocationCode?: string;
-  public key?: string;
-  public stack?: string | undefined;
+export class BaseError  extends Error{
+  public readonly action?: string;
+  public readonly statusCode?: number;
+  public readonly errorLocationCode?: string;
+  public readonly key?: string;
+  public readonly stack?: string | undefined;
+  //public readonly message?: string;
   constructor(
-    message: string,
-    stack: any,
-    action: string,
-    statusCode: number,
+    message?: string,
+    stack?: any,
+    action?: string,
+    statusCode?: number,
     errorLocationCode?: string,
     key?: string,
   ) {
-    super();
-    this.message = message;
+    super(message)
+   // this.message = message;
     this.stack = stack;
     this.action = action;
     this.statusCode = statusCode;

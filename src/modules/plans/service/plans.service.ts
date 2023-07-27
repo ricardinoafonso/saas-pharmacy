@@ -1,12 +1,13 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { injectable } from "tsyringe";
 import { prisma } from "@shared/infra/database/database";
-import { IplansService } from "../dto/plans.dto";
+import { Plans} from "../dto/plans.dto";
 import { getPagination } from "@utils/util";
 import { BaseError } from "@errors/Base";
+import { PAGE_SIZE_DEFAULT } from "@config/index";
 
 @injectable()
-export class PlansService implements IplansService {
+export class PlansService implements Plans {
   private PlansRepository: PrismaClient;
   constructor() {
     this.PlansRepository = prisma;
@@ -27,7 +28,7 @@ export class PlansService implements IplansService {
   }
   async findAll(page?: number | undefined): Promise<Prisma.plansCreateInput[]> {
     const pageNumber = page ? page : 0;
-    const { take, skip } = getPagination(pageNumber, 20);
+    const { take, skip } = getPagination(pageNumber, PAGE_SIZE_DEFAULT);
     const plans = await this.PlansRepository.plans.findMany({
       skip,
       take,

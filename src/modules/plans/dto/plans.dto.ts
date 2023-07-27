@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export interface IplansService {
+export interface Plans {
   create(data: Prisma.plansCreateInput): Promise<Prisma.plansCreateInput>;
   delete(id: number): Promise<any>;
   update(

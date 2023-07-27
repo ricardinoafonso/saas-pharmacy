@@ -1,52 +1,86 @@
 import { NextFunction, Request, Response } from "express";
 import { BaseError } from "@errors/Base";
-import { decode, verify } from "jsonwebtoken";
-import { Prisma } from "@prisma/client";
+import { inject, singleton } from "tsyringe";
+import { User } from "@modules/Users/dto/services.dto";
+import { JwtService } from "@shared/services/jwtService/jwtService.service";
+import { IUser } from "@modules/Users/dto/user.dto";
 
-const { SECRETE_JWT } = process.env;
-
-async function Decoder(req: Request): Promise<Prisma.UserCreateInput | any> {
-  const authorizatin = req.headers.authorization || "";
-  const [, token] = authorizatin.split(" ");
-  const { sub } = verify(token, `${SECRETE_JWT}`);
-  if (sub) {
-    let payload = decode(token);
-    return payload;
-  }
-}
-
-export function is(role: string[]) {
-  const authorizatin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const user = await Decoder(req);
-      const roles = user?.features.map((role: string) => role);
-      const existsRole = roles?.some((r: string) => role.includes(r));
-      if (existsRole) {
-        next();
+@singleton()
+export class Authorization {
+  constructor(
+    @inject("userService") private userService: User,
+    @inject("jwtService") private jwtService: JwtService
+  ) {}
+  private async Decoder(req: Request): Promise<IUser | any> {
+    const Authorizations = req.headers.authorization || "";
+    const [, token] = Authorizations.split(" ");
+    const { sub: id } = this.jwtService.verifyToken(token);
+    if (id) {
+      const user = await this.userService.findOne(Number(id));
+      if (!user.status) {
+        throw new BaseError(
+          "usuario sem subscricao,ou desactivado",
+          new Error().stack,
+          "Renova sua Subscrisao, ou contacte o suporte !",
+          423,
+          "auth:middleware:user",
+          "Features"
+        );
       }
-      throw new BaseError(
-        "usuario nao authorized",
-        new Error().stack,
-        "authorization",
-        401,
-        "SERVICE:AUTHORIZATION",
-        "authorization"
-      );
-    } catch (error: any) {
-      throw new BaseError(
-        error.message,
-        error.stack,
-        "authorization",
-        401,
-        "SERVICE:AUTHORIZATION",
-        "authorization"
-      );
+      req.user = user.id
+      const { password, ...payload } = user;
+      return payload;
     }
-  };
+  }
 
-  return authorizatin;
+
+  public is(role: string[]) {
+    const authorization = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
+      try {
+        const user = await this.Decoder(req);
+        const roles = user?.features.map((r: string) => r);
+        const checkUserHaveRoles = roles.some((r: string) => role.includes(r));
+        if (checkUserHaveRoles) {
+          return next();
+        }
+        throw new BaseError(
+          "usuario nao authorized , nao tens permissao completar essa acao!",
+          new Error().stack,
+          "authorization",
+          401,
+          "shared:authorization",
+          "authorization"
+        );
+      } catch (error: any) {
+        if (error.stack.includes("TokenExpiredError")) {
+          next(
+            new BaseError(
+              "Token expirado por favor inicia sessao novamente",
+              '',
+              "authorization",
+              401,
+              "shared:authorization",
+              "authorization"
+            )
+          );
+        }
+        next(
+          new BaseError(
+            error.message,
+            error.stack,
+            "authorization",
+            401,
+            "shared:authorization",
+            "authorization"
+          )
+        );
+      }
+    };
+
+    return authorization;
+  }
 }

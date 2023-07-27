@@ -41,6 +41,7 @@ CREATE TABLE "subscription" (
     "id" SERIAL NOT NULL,
     "plansId" INTEGER,
     "userId" INTEGER,
+    "status" BOOLEAN NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -107,6 +108,10 @@ CREATE TABLE "product" (
     "price" DOUBLE PRECISION NOT NULL,
     "quantity" INTEGER NOT NULL,
     "localization" TEXT NOT NULL,
+    "iva" DOUBLE PRECISION NOT NULL,
+    "priceBuy" DOUBLE PRECISION NOT NULL,
+    "discount" DOUBLE PRECISION NOT NULL,
+    "code" INTEGER NOT NULL,
     "categorieId" INTEGER,
     "companyId" INTEGER,
 
@@ -117,9 +122,11 @@ CREATE TABLE "product" (
 CREATE TABLE "sales" (
     "id" SERIAL NOT NULL,
     "total" DOUBLE PRECISION NOT NULL,
-    "data" TIMESTAMP(3) NOT NULL,
-    "employeId" INTEGER,
+    "paymentType" TEXT[],
+    "employeeId" INTEGER,
     "companyId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "sales_pkey" PRIMARY KEY ("id")
 );
@@ -130,6 +137,8 @@ CREATE TABLE "salesItems" (
     "salesId" INTEGER,
     "quantity" INTEGER NOT NULL,
     "productId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "salesItems_pkey" PRIMARY KEY ("id")
 );
@@ -142,6 +151,8 @@ CREATE TABLE "sessions" (
     "refer" TEXT NOT NULL,
     "userAgent" TEXT NOT NULL,
     "employeId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
 );
@@ -154,6 +165,8 @@ CREATE TABLE "custumers" (
     "endereco" TEXT NOT NULL,
     "data" TIMESTAMP(3) NOT NULL,
     "companyId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "custumers_pkey" PRIMARY KEY ("id")
 );
@@ -189,7 +202,7 @@ ALTER TABLE "product" ADD CONSTRAINT "product_categorieId_fkey" FOREIGN KEY ("ca
 ALTER TABLE "product" ADD CONSTRAINT "product_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companys"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sales" ADD CONSTRAINT "sales_employeId_fkey" FOREIGN KEY ("employeId") REFERENCES "employees"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "sales" ADD CONSTRAINT "sales_employeeId_fkey" FOREIGN KEY ("employeeId") REFERENCES "employees"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "sales" ADD CONSTRAINT "sales_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "companys"("id") ON DELETE SET NULL ON UPDATE CASCADE;

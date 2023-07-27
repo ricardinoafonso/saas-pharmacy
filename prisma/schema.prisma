@@ -59,6 +59,7 @@ model subscription {
   plansId   Int?
   User      User?    @relation(fields: [userId], references: [id])
   userId    Int?
+  status    Boolean
   startDate DateTime
   endDate   DateTime
   createdAt DateTime @default(now())
@@ -91,7 +92,6 @@ model User {
   subscription subscription[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now())
-
   @@map("users")
 }
 
@@ -101,7 +101,7 @@ model employees {
   username  String
   email     String
   password  String
-  adress    String
+  address    String
   company   company?  @relation(fields: [companyId], references: [id])
   companyId Int?
   sales     sales[]
@@ -116,7 +116,6 @@ model categorie {
   id      Int       @id @default(autoincrement())
   name    String
   product product[]
-
   @@map("categories")
 }
 
@@ -126,6 +125,10 @@ model product {
   price        Float
   quantity     Int
   localization String
+  iva          Float
+  priceBuy     Float
+  discount      Float
+  code         Int
   categorie    categorie?  @relation(fields: [categorieId], references: [id])
   categorieId  Int?
   salesItem    salesItem[]
@@ -138,13 +141,14 @@ model product {
 model sales {
   id        Int         @id @default(autoincrement())
   total     Float
-  data      DateTime
+  paymentType String[]
   salesItem salesItem[]
-  employe   employees?  @relation(fields: [employeId], references: [id])
-  employeId Int?
+  employe   employees?  @relation(fields: [employeeId], references: [id])
+  employeeId Int?
   company   company?    @relation(fields: [companyId], references: [id])
   companyId Int?
-
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
   @@map("sales")
 }
 
@@ -155,7 +159,8 @@ model salesItem {
   quantity  Int
   product   product? @relation(fields: [productId], references: [id])
   productId Int?
-
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
   @@map("salesItems")
 }
 
@@ -167,7 +172,8 @@ model session {
   userAgent String
   employe   employees? @relation(fields: [employeId], references: [id])
   employeId Int?
-
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
   @@map("sessions")
 }
 
@@ -179,6 +185,7 @@ model custumers {
   data      DateTime
   company   company? @relation(fields: [companyId], references: [id])
   companyId Int?
-
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
   @@map("custumers")
 }

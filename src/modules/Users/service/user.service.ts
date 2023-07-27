@@ -3,16 +3,17 @@ import { prisma } from "@shared/infra/database/database";
 import { IStatus, IUser } from "../dto/user.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { BaseError } from "@errors/Base";
-import { IuserService } from "../dto/services.dto";
+import { User } from "../dto/services.dto";
 import { getPagination } from "@utils/util";
+import { PAGE_SIZE_DEFAULT } from "@config/index";
 
 @injectable()
-export class UserService implements IuserService {
+export class UserService implements User {
   private readonly UserRepository: PrismaClient
   constructor() {
     this.UserRepository = prisma
   }
-  public async create(User: IUser): Promise<Prisma.UserCreateInput> {
+  public async create(User: IUser): Promise<IUser> {
     try {
       const user = await this.where({
         OR: [{ email: User.email }, { username: User.username }],
@@ -57,7 +58,7 @@ export class UserService implements IuserService {
 
   public async where(
     where: Prisma.UserWhereInput
-  ): Promise<Prisma.UserCreateInput | undefined> {
+  ): Promise< IUser | undefined> {
     return (await this.UserRepository.user.findFirst({
       where,
     })) as IUser;
@@ -71,7 +72,7 @@ export class UserService implements IuserService {
   ): Promise<Prisma.UserCreateInput[]> {
     try {
       const { page, orderBy } = params;
-      const { skip, take } = getPagination(page, 1);
+      const { skip, take } = getPagination(page, PAGE_SIZE_DEFAULT);
       const filteredUser = await this.UserRepository.user.findMany({
         skip,
         take,

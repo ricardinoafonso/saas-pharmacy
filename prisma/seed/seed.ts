@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { hash } from "bcryptjs";
+
 
 const client = new PrismaClient();
 
@@ -7,9 +9,9 @@ async function Run(): Promise<void> {
     const user = await client.user.create({
       data: {
         name: "Ricardino de Almeida Afonso",
-        username: "ricardinoafonso",
-        password: "1234567",
-        email: "admin@rimpdv.com",
+        username: "ricardinoafonsos",
+        password: await hash("1234567",8),
+        email: "admin@farmacias.com",
         endereco: "Rua Maior ricardo 12",
         status: true,
         features: [

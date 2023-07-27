@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es5",               
+    "module": "commonjs",   
     "rootDir": "./",
     "baseUrl": "./src",
     "outDir": "./dist",
@@ -9,14 +9,17 @@
       "@modules/*": ["modules/*"],
       "@config/*": ["config/*"],
       "@shared/*": ["shared/*"],
-      "@errors/*": ["errors/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@errors/*": ["errors/*"]
     },
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+                      /* Conditions to set in addition to the resolver-specific defaults when resolving imports. */
+     "resolveJsonModule": true,                        /* Enable importing .json files. */
+     "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
+     "emitDecoratorMetadata": true,                /* Allow 'import x from y' when a module doesn't have a default export. */
+    "esModuleInterop": true,                                                 /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
+    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+    "strict": false,                                      /* Enable all strict type-checking options. */
+    "strictPropertyInitialization": false,             /* Check for class properties that are declared but not set in the constructor. */
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   }
 }

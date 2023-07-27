@@ -1,12 +1,12 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { Ikey, Ikeys, IkeysDto } from "../dto/keys.dto";
+import { Keys, IkeysDto } from "../dto/keys.dto";
 import { prisma } from "@shared/infra/database/database";
 import { injectable } from "tsyringe";
 import { getPagination } from "@utils/util";
 import crypto from "crypto";
 
 @injectable()
-export class KeysService implements Ikeys {
+export class KeysService implements Keys {
   private algoritm: string = process.env.algoritm;
   private secretKey: string = `${process.env.secretKey_keys}`;
   private readonly IKeysRepository: PrismaClient;

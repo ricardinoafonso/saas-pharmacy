@@ -1,7 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { IStatus, IUser } from "./user.dto";
+import { Request,Response } from "express";
 
-export interface IuserService {
+export interface User {
   create(User: IUser): Promise<Prisma.UserCreateInput>;
   findAll(): Promise<Prisma.UserCreateInput[]>;
   where(
@@ -21,4 +22,25 @@ export interface IuserService {
   findUsername(username: string): Promise<Prisma.UserCreateInput>;
   update(id: number, data: IUser): Promise<IUser | undefined>;
   delete(id: number): Promise<Prisma.UserCreateInput>;
+}
+
+export interface IAuth {
+  Login(data: IAuthUser): Promise<{ access_token: string }>;
+  signup(data: ISignup): Promise<{ message: string; data: IUser }>;
+}
+
+export interface AuthController {
+  Login(req: Request, res: Response): Promise<Response>;
+  singup(req: Request, res: Response): Promise<Response>;
+}
+
+export interface ISignup {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+}
+export interface IAuthUser {
+  username: string;
+  password: string;
 }

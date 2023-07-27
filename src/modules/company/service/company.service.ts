@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { IcompanyService } from "../dto/company.dto";
+import { Company } from "../dto/company.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getPagination } from "@utils/util";
 import { BaseError } from "@errors/Base";
@@ -7,24 +7,41 @@ import { prisma } from "@shared/infra/database/database";
 import { UserService } from "@modules/Users/service/user.service";
 
 @injectable()
-export class CompanyService implements IcompanyService {
-  private readonly ICompanyRepository: PrismaClient;  
+export class CompanyService implements Company {
+  private readonly CompanyRepository: PrismaClient;
   constructor(
     @inject("userService") private readonly userService: UserService
   ) {
-    this.ICompanyRepository = prisma;
+    this.CompanyRepository = prisma;
   }
   async create(
     data: Prisma.companyCreateInput
   ): Promise<Prisma.companyCreateManyUserInput> {
-    const company = await this.ICompanyRepository.company.create({
+    const findNameOrNif = await this.find({
+      OR: [{ nif: data.nif }, { name: data.name }],
+    });
+    if (findNameOrNif)
+      throw new BaseError(
+        "company or nif already exists.",
+        "",
+        "nif or name",
+        400,
+        "service:company",
+        ""
+      );
+    const company = await this.CompanyRepository.company.create({
       data,
       include: { User: true },
     });
     return company;
   }
+  async find(
+    where: Prisma.companyWhereInput
+  ): Promise<Prisma.companyCreateInput> {
+    return this.CompanyRepository.company.findFirst({ where });
+  }
   async delete(where: Prisma.companyWhereInput): Promise<Prisma.BatchPayload> {
-    const company = await this.ICompanyRepository.company.deleteMany({
+    const company = await this.CompanyRepository.company.deleteMany({
       where,
     });
     return company;
@@ -33,7 +50,7 @@ export class CompanyService implements IcompanyService {
     id: number,
     data: Prisma.companyCreateInput
   ): Promise<Prisma.companyUpdateInput> {
-    return await this.ICompanyRepository.company.update({
+    return await this.CompanyRepository.company.update({
       data,
       where: { id },
     });
@@ -42,7 +59,7 @@ export class CompanyService implements IcompanyService {
     where: Prisma.companyWhereInput,
     data: Prisma.companyCreateInput
   ): Promise<Prisma.BatchPayload> {
-    const company = await this.ICompanyRepository.company.updateMany({
+    const company = await this.CompanyRepository.company.updateMany({
       data,
       where,
     });
@@ -68,7 +85,7 @@ export class CompanyService implements IcompanyService {
       );
     }
     if (search) {
-      const company = await this.ICompanyRepository.company.findMany({
+      const company = await this.CompanyRepository.company.findMany({
         skip,
         take,
         orderBy,
@@ -97,7 +114,7 @@ export class CompanyService implements IcompanyService {
       }
     }
 
-    const company = await this.ICompanyRepository.company.findMany({
+    const company = await this.CompanyRepository.company.findMany({
       skip,
       take,
       orderBy: {
@@ -124,7 +141,7 @@ export class CompanyService implements IcompanyService {
   }
 
   async findOne(id: number): Promise<Prisma.companyCreateInput | undefined> {
-    const company = await this.ICompanyRepository.company.findFirst({
+    const company = await this.CompanyRepository.company.findFirst({
       where: { id },
     });
     if (!company)
@@ -138,6 +155,9 @@ export class CompanyService implements IcompanyService {
       );
     return company;
   }
+  async where (where:Prisma.companyWhereInput) : Promise<Prisma.companyCreateInput>{
+    return this.CompanyRepository.company.findFirst({ where })
+  }
   async findAll(
     search?: string,
     page?: number,
@@ -146,7 +166,7 @@ export class CompanyService implements IcompanyService {
     let pageNumber = page === undefined ? 0 : page;
     const { take, skip } = getPagination(pageNumber, 20);
     if (!search) {
-      const company = await this.ICompanyRepository.company.findMany({
+      const company = await this.CompanyRepository.company.findMany({
         skip,
         take,
         orderBy: {
@@ -166,7 +186,7 @@ export class CompanyService implements IcompanyService {
       return company;
     }
 
-    const companyPagination = this.ICompanyRepository.company.findMany({
+    const companyPagination = this.CompanyRepository.company.findMany({
       skip,
       take,
       orderBy,

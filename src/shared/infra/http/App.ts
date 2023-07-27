@@ -1,4 +1,4 @@
-import App from "./server";
+import {App} from "./server";
 const { PORT } = process.env;
 
 App.listen(PORT || 3000, () => {
