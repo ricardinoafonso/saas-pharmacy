@@ -11,7 +11,7 @@ export class EmployeesController implements IResponse {
   ): Promise<Response<any, Record<string, any>>> {
     const data = req.body as EmployeesTypes;
     const employeesContainer = container.resolve(EmployeesServices);
-    const result = await employeesContainer.create(data);
+    const result = await employeesContainer.create(data, parseInt(`${req.user}`));
     return res.status(201).json(result);
   }
   async findOne(

@@ -1,5 +1,5 @@
 import { compare, hash } from "bcryptjs";
-
+import crypto from 'crypto';
 export function getPagination(
   page: number,
   size: number
@@ -20,7 +20,10 @@ export async function hashPassword(password: string): Promise<string> {
   return hash(password, 8);
 }
 
-
 export function getPercentaged(price: number, tax: number) {
-  return (price / 100) * tax
+  return (price / 100) * tax;
+}
+
+export function geratetoken(): string {
+  return crypto.randomUUID();
 }

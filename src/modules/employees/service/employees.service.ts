@@ -3,11 +3,14 @@ import { EmployeesTypes } from "../dto/employees.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { prisma } from "@shared/infra/database/database";
 import { BaseError } from "@errors/Base";
-import { getPagination, hashPassword } from "@utils/util";
+import { geratetoken, getPagination, hashPassword } from "@utils/util";
 import { PAGE_SIZE_DEFAULT } from "@config/index";
-import { inject } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import { Can } from "@shared/authorization/can";
+import { IKafkaProducer } from "@shared/infra/container/provider/kafka/producer/kafka-producer";
+import { IDateProvider } from "@shared/infra/container/provider/DataProvider/dto";
 
+@injectable()
 export class EmployeesServices
   implements
     FindOne<EmployeesTypes, number, number>,
@@ -21,15 +24,15 @@ export class EmployeesServices
     Component<EmployeesTypes>
 {
   private EmployeesRepository: PrismaClient;
-  constructor(@inject("can") private can: Can) {
+  constructor(
+    @inject("KafkaProducer") private KafkaProducer: IKafkaProducer,
+    @inject("can") private can: Can,
+    @inject("DaysjsProvider") private DaysJs: IDateProvider
+  ) {
     this.EmployeesRepository = prisma;
   }
-  async create(
-    data: EmployeesTypes,
-    id?: number,
-    params?: { company?: number; userId?: number }
-  ): Promise<EmployeesTypes> {
-    await this.can.Can(params.company, params.userId);
+  async create(data: EmployeesTypes, id?: number): Promise<EmployeesTypes> {
+    await this.can.Can(data.companyId, id);
     const employees = await this.where({
       companyId: data.companyId,
       OR: [
@@ -48,16 +51,31 @@ export class EmployeesServices
         "data"
       );
     }
-    return await this.EmployeesRepository.employees.create({
+    const createEmployees = await this.EmployeesRepository.employees.create({
       data: {
         name: data.name,
         username: data.username,
         email: data.email,
         address: data.address,
         password: await hashPassword(data.password),
+        features: ["account:inactive"],
         companyId: data.companyId,
       },
     });
+
+    await this.EmployeesRepository.tokens.create({
+      data: {
+        token: geratetoken(),
+        employeesId: createEmployees.id,
+        expires: this.DaysJs.addDays(1),
+      },
+    });
+
+    await this.KafkaProducer.execute("SEND_MAIL", {
+      email: data.email,
+      username: data.username,
+    });
+    return createEmployees;
   }
 
   async findAll(

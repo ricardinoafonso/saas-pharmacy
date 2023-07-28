@@ -11,10 +11,12 @@ import CategoriesRouter from '@modules/categories/routes/categories.routes';
 import salesRouter from '@modules/sales/routes/sales.routes';
 import userRoute from '@modules/Users/routes/user.routes';
 import { employeesRouter } from '@modules/employees/routes/employees.routes';
+import refreshRouter from '@modules/token/routes/token.routes';
 const LoadRoutes = (app: any) => {
   app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(docs));
   app.use('/api/v1/user/auth', authRoute);
   app.use('/api/v1/user', userRoute);
+  app.use('/api/v1/token', refreshRouter)
 
   app.use('/api/v1/subscription', SubscriptionRouter);
   app.use('/api/v1/company', companyRouter);

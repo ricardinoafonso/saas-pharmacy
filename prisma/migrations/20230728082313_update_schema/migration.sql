@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "tokens" ADD COLUMN     "type" TEXT,
+ALTER COLUMN "expires" DROP NOT NULL,
+ALTER COLUMN "token" DROP NOT NULL;

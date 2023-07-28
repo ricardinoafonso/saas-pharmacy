@@ -1,19 +1,17 @@
 import { BaseError } from "@errors/Base";
 import { CompanyService } from "@modules/company/service/company.service";
 import { EmployeesServices } from "@modules/employees/service/employees.service";
-import { inject, singleton } from "tsyringe";
+import { container, injectable } from 'tsyringe';
 
-@singleton()
+@injectable()
 export class Can {
-  constructor(
-    @inject("companyService") private companyService: CompanyService,
-    @inject("employeesService") private employeesService: EmployeesServices
-  ) {}
   async Can(company?: number, id?: number): Promise<void> {
+    const companyService = container.resolve(CompanyService);
+    const employeesService = container.resolve(EmployeesServices);
     try {
-      const can = await this.companyService.where({ id: company, userId: id });
+      const can = await companyService.where({ id: company, userId: id });
       if (!can) {
-        const employeesCan = await this.employeesService.where({
+        const employeesCan = await employeesService.where({
           id: id,
           companyId: company,
         });

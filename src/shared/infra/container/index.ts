@@ -20,6 +20,8 @@ import { ICategories } from "../../../modules/categories/dto/categories.dto";
 import { CategoriesServices } from "@modules/categories/service/categories.service";
 import { Can } from "@shared/authorization/can";
 import { EmployeesServices } from "@modules/employees/service/employees.service";
+import { IKafkaProducer, Producer } from "./provider/kafka/producer/kafka-producer";
+import { TokenService } from "@modules/token/service/token.service";
 
 container.register<IAuth>("auth", Auth);
 container.registerSingleton<User>("userService", UserService);
@@ -30,7 +32,9 @@ container.register<Keys>("keysService", KeysService);
 container.register<Plans>("plansService", PlansService);
 container.register<Limit>("limitService", LimitService);
 container.registerSingleton("productService", ProductService);
-container.registerSingleton("can", Can);
 container.register<SalesDto>("salesService", SalesServices);
 container.register<ICategories>("categoriesService", CategoriesServices);
 container.registerSingleton("employeesService", EmployeesServices);
+container.registerSingleton<IKafkaProducer>("KafkaProducer", Producer);
+container.registerSingleton("can", Can);
+container.register('tokenService', TokenService)

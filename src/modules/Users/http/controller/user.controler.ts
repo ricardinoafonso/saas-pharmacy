@@ -15,6 +15,7 @@ export class UserController implements IResponse {
     return res.status(201).json(user);
   }
 
+  
   async findAll(
     req: Request,
     res: Response<any, Record<string, any>>

@@ -2,7 +2,6 @@ export interface Component<T> {
   create(
     data: T,
     id?: number,
-    params?: { company?: number; userId?: number }
   ): Promise<T>;
 }
 export interface FindAll<T, SORT, ID, PAGE, SEARCH> {

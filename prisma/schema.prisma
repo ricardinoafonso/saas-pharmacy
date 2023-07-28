@@ -92,6 +92,8 @@ model User {
   subscription subscription[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @default(now())
+  tokens       tokens[]
+
   @@map("users")
 }
 
@@ -101,13 +103,15 @@ model employees {
   username  String
   email     String
   password  String
-  address    String
+  address   String
   company   company?  @relation(fields: [companyId], references: [id])
   companyId Int?
   sales     sales[]
+  features  String[]
   sessions  session[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
+  tokens    tokens[]
 
   @@map("employees")
 }
@@ -116,6 +120,7 @@ model categorie {
   id      Int       @id @default(autoincrement())
   name    String
   product product[]
+
   @@map("categories")
 }
 
@@ -127,7 +132,7 @@ model product {
   localization String
   iva          Float
   priceBuy     Float
-  discount      Float
+  discount     Float
   code         Int
   categorie    categorie?  @relation(fields: [categorieId], references: [id])
   categorieId  Int?
@@ -139,16 +144,17 @@ model product {
 }
 
 model sales {
-  id        Int         @id @default(autoincrement())
-  total     Float
+  id          Int         @id @default(autoincrement())
+  total       Float
   paymentType String[]
-  salesItem salesItem[]
-  employe   employees?  @relation(fields: [employeeId], references: [id])
-  employeeId Int?
-  company   company?    @relation(fields: [companyId], references: [id])
-  companyId Int?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  salesItem   salesItem[]
+  employe     employees?  @relation(fields: [employeeId], references: [id])
+  employeeId  Int?
+  company     company?    @relation(fields: [companyId], references: [id])
+  companyId   Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now())
+
   @@map("sales")
 }
 
@@ -159,8 +165,9 @@ model salesItem {
   quantity  Int
   product   product? @relation(fields: [productId], references: [id])
   productId Int?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
   @@map("salesItems")
 }
 
@@ -172,8 +179,9 @@ model session {
   userAgent String
   employe   employees? @relation(fields: [employeId], references: [id])
   employeId Int?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now())
+
   @@map("sessions")
 }
 
@@ -185,7 +193,21 @@ model custumers {
   data      DateTime
   company   company? @relation(fields: [companyId], references: [id])
   companyId Int?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
   @@map("custumers")
+}
+
+model tokens {
+  id          String    @id @default(uuid())
+  employees   employees? @relation(fields: [employeesId], references: [id])
+  employeesId Int?
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      Int?
+  expires     DateTime?
+  token       String?
+  token_type        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
 }
