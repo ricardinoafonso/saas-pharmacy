@@ -40,15 +40,6 @@ export class Authorization {
       return payload;
     }
   }
-
-  private refresh(
-    _req: Request,
-    _rees: Response,
-    next: NextFunction
-  ): Promise<Response> {
-    const { token } = _req.body;
-    const refresh = await 
-  }
   public is(role: string[]) {
     const authorization = async (
       req: Request,
