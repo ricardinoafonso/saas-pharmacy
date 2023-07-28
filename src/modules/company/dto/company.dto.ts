@@ -27,7 +27,7 @@ export type Icompanydto = {
   id?: number;
   name?: string | undefined;
   email?: string | undefined;
-  telefone?: number | undefined;
+  telefone?: string | undefined;
   endereco?: string | undefined;
   nif?: string | undefined;
   userId?: number | undefined;

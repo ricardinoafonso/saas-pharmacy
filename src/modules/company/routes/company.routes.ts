@@ -4,6 +4,7 @@ const companyRouter = Router();
 const CompanyController = new companyController();
 
 companyRouter.get('/', CompanyController.findAll)
+companyRouter.get("/:id",CompanyController.findOne)
 companyRouter.get('/user/:id',CompanyController.findUserId)
 companyRouter.post("/create", CompanyController.create);
 

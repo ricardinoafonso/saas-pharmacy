@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { Company } from "../dto/company.dto";
+import { Company, Icompanydto } from "../dto/company.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getPagination } from "@utils/util";
 import { BaseError } from "@errors/Base";
@@ -140,9 +140,12 @@ export class CompanyService implements Company {
     return company;
   }
 
-  async findOne(id: number): Promise<Prisma.companyCreateInput | undefined> {
+  async findOne(id: number): Promise<Icompanydto> {
     const company = await this.CompanyRepository.company.findFirst({
       where: { id },
+      include: {
+        User: true,
+      },
     });
     if (!company)
       throw new BaseError(
@@ -155,8 +158,10 @@ export class CompanyService implements Company {
       );
     return company;
   }
-  async where (where:Prisma.companyWhereInput) : Promise<Prisma.companyCreateInput>{
-    return this.CompanyRepository.company.findFirst({ where })
+  async where(
+    where: Prisma.companyWhereInput
+  ): Promise<Prisma.companyCreateInput> {
+    return this.CompanyRepository.company.findFirst({ where });
   }
   async findAll(
     search?: string,

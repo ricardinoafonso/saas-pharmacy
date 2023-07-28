@@ -1,4 +1,8 @@
-import { EmployeesTypes } from "@modules/employees/dto/employees.dto";
+import {
+  EmployeesAuth,
+  EmployeesTypes,
+} from "@modules/employees/dto/employees.dto";
+import { AuthEmployees } from "@modules/employees/service/employees.auth.service";
 import { EmployeesServices } from "@modules/employees/service/employees.service";
 import { IResponse } from "@shared/DTO/response.dto";
 import { Request, Response } from "express";
@@ -11,8 +15,21 @@ export class EmployeesController implements IResponse {
   ): Promise<Response<any, Record<string, any>>> {
     const data = req.body as EmployeesTypes;
     const employeesContainer = container.resolve(EmployeesServices);
-    const result = await employeesContainer.create(data, parseInt(`${req.user}`));
+    const result = await employeesContainer.create(
+      data,
+      parseInt(`${req.user}`)
+    );
     return res.status(201).json(result);
+  }
+
+  async login(
+    req: Request,
+    res: Response<any, Record<string, any>>
+  ): Promise<Response<any, Record<string, any>>> {
+    const data = req.body as EmployeesAuth;
+    const EmployeesContainer = container.resolve(AuthEmployees);
+    const result = await EmployeesContainer.execute(data);
+    return res.status(200).json(result);
   }
   async findOne(
     req: Request,
@@ -39,7 +56,7 @@ export class EmployeesController implements IResponse {
 
     return res.status(200).json(result);
   }
- async update(
+  async update(
     req: Request,
     res: Response<any, Record<string, any>>
   ): Promise<Response<any, Record<string, any>>> {
@@ -51,7 +68,7 @@ export class EmployeesController implements IResponse {
       parseInt(id),
       parseInt(`${req.user}`)
     );
-    return res.status(200).json(result)
+    return res.status(200).json(result);
   }
   async delete(
     req: Request,

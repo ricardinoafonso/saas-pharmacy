@@ -1,19 +1,23 @@
 import { injectable } from "tsyringe";
-import kafka from "../kafka";
 import { BaseError } from "@errors/Base";
+import { Producer, CompressionTypes, Kafka } from "kafkajs";
 
 export interface IKafkaProducer {
   execute(topic: string, payload: any): Promise<void>;
 }
 
 @injectable()
-export class Producer implements IKafkaProducer {
+export class Producers implements IKafkaProducer {
+  private producer: Producer;
+  constructor() {
+    this.producer = this.producerKafka();
+  }
   async execute(topic: string, payload: any): Promise<void> {
-    const producer = kafka.producer();
     try {
-      await producer.connect();
-      await producer.send({
+      await this.producer.connect();
+      await this.producer.send({
         topic: topic,
+        compression: CompressionTypes.GZIP,
         messages: [{ value: JSON.stringify(payload) }],
       });
     } catch (error) {
@@ -26,7 +30,21 @@ export class Producer implements IKafkaProducer {
         "kafka"
       );
     } finally {
-      await producer.disconnect();
+      await this.producer.disconnect();
     }
+  }
+  private producerKafka(): Producer {
+    const producerkafka = new Kafka({
+      brokers: ["stunning-manatee-14111-us1-kafka.upstash.io:9092"],
+      sasl: {
+        mechanism: "scram-sha-256",
+        username:
+          "c3R1bm5pbmctbWFuYXRlZS0xNDExMSS2ZoW8hd-z-5NBE2Qw2M4Tkt1urgwwfqE",
+        password: "d6f5a0e2552044fe981210071c036d96",
+      },
+      ssl: true,
+    });
+    const producer = producerkafka.producer();
+    return producer;
   }
 }

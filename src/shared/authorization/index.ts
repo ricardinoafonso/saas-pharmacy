@@ -34,7 +34,6 @@ export class Authorization {
           );
         }
       }
-      const { signed } = req.signedCookies;
       req.user = this.User.id;
       const { password, ...payload } = this.User;
       return payload;

@@ -9,7 +9,7 @@ export class companyController implements IResponse {
   async findOne(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
     const containerCompany = container.resolve(CompanyService);
-    const result = containerCompany.findOne(parseInt(id));
+    const result = await containerCompany.findOne(parseInt(id));
     return res.status(200).json(result);
   }
   async findAll(req: Request, res: Response): Promise<Response> {

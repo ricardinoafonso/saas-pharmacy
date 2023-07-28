@@ -62,18 +62,20 @@ export class EmployeesServices
         companyId: data.companyId,
       },
     });
-
+    const token = geratetoken()
     await this.EmployeesRepository.tokens.create({
       data: {
-        token: geratetoken(),
+        token: token,
         employeesId: createEmployees.id,
         expires: this.DaysJs.addDays(1),
+        token_type: 'account:activation'
       },
     });
 
     await this.KafkaProducer.execute("SEND_MAIL", {
       email: data.email,
       username: data.username,
+      token: token
     });
     return createEmployees;
   }

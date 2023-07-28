@@ -8,6 +8,8 @@ const AuthorizationContainer = container.resolve(Authorization);
 const employeesRouter = Router();
 const controller = new EmployeesController();
 
+employeesRouter.post('/auth', controller.login)
+
 employeesRouter.use(AuthorizationContainer.is(['superuser','admin']))
 employeesRouter.post('/create', controller.create);
 employeesRouter.get('/:id', controller.findAll);

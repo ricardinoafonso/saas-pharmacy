@@ -4,9 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start":  "tsx watch src/shared/infra/http/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "nodemailer": "^6.9.4",
+    "tsx": "^3.12.7"
+  },
+  "devDependencies": {
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6"
+  }
 }
