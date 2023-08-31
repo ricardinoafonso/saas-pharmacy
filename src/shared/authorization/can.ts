@@ -1,4 +1,4 @@
-import { BaseError } from "@errors/Base";
+import { BadRequest, NotAuthorized, NotFound } from "@errors/Base";
 import { CompanyService } from "@modules/farmacia/company/service/company.service";
 import { EmployeesServices } from "@modules/farmacia/employees/service/employees.service";
 import { container, inject, injectable } from "tsyringe";
@@ -22,20 +22,16 @@ export class Can {
       userId: userId,
     });
     if (!subscription)
-      throw new BaseError(
-        " por favor subscreva em plano!",
-        new Error().stack,
-        "seu plano nao foi encontrado",
-        404
+      throw new NotFound(
+        "please subscribe to plan!",
+        "your subscription is deactivated."
       );
 
     const { plansId, status } = subscription;
     if (!status)
-      throw new BaseError(
-        " sua conta foi desativada, por favor atualize a pagina",
-        new Error().stack,
-        "por favor renove sua subscrisao",
-        400
+      throw new BadRequest(
+        "your account has been deactivated, please refresh the page",
+        "please renew your subscription"
       );
 
     const { company_number, employers } = await this.limit.findWhere({
@@ -45,25 +41,24 @@ export class Can {
     if (type_action) {
       const { _all } = await employeesService.count({ companyId: companyId });
       if (_all >= employers)
-        throw new BaseError(
-          "nao podes criar mais funcionarios, atingiste o limite.",
-          new Error().stack,
-          "atualiza sua subscrisao",
-          400
+        throw new BadRequest(
+          "You cannot create more employees, you have reached the limit.",
+          "update your subscription"
         );
     } else {
       const { _all } = await companyService.count({ userId: userId });
 
       if (_all >= company_number)
-        throw new BaseError(
-          "nao podes criar mais companias, atingiste o limite.",
-          new Error().stack,
-          "atualiza sua subscrisao",
-          400
+        throw new BadRequest(
+          "You cannot create more companies, you have reached the limit.",
+          "update your subscription"
         );
     }
   }
-  async checkIfUserAlreadyPermissionToCompleteThisAction(company: number, id?: number): Promise<void> {
+  async checkIfUserAlreadyPermissionToCompleteThisAction(
+    company: number,
+    id?: number
+  ): Promise<void> {
     const companyService = container.resolve(CompanyService);
     const employeesService = container.resolve(EmployeesServices);
     try {
@@ -74,25 +69,14 @@ export class Can {
           companyId: company,
         });
         if (!employeesCan) {
-          throw new BaseError(
-            "usuario nao tem acesso a essa propriedade",
-            "",
-            "nao autorizado",
-            423,
-            "service:product:create:name",
-            "name"
+          throw new NotAuthorized(
+            "user does not have access to this property",
+            "service:product:create:name"
           );
         }
       }
     } catch (error) {
-      throw new BaseError(
-        error.message,
-        error.stack,
-        "",
-        423,
-        "can",
-        "database"
-      );
+      throw new NotAuthorized("user not authorized", error.stack);
     }
   }
 }
