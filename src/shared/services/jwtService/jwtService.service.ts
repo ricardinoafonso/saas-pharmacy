@@ -1,7 +1,7 @@
 import { IUser } from "@modules/Users/dto/user.dto";
 import { decode, sign, verify } from "jsonwebtoken";
 import { singleton } from "tsyringe";
-import { EmployeesTypes } from "@modules/employees/dto/employees.dto";
+import { EmployeesTypes } from "@modules/farmacia/employees/dto/employees.dto";
 
 const { SECRETE_JWT, JWT_REFRESH_KEY } = process.env;
 @singleton()
@@ -40,8 +40,8 @@ export class JwtService {
     );
   }
   public verifyToken(token: string, types_verify?: string): any {
-    if (types_verify === "REFRESH") return verify(token, `${JWT_REFRESH_KEY}`);
-    return verify(token, `${SECRETE_JWT}`);
+    if (types_verify === "REFRESH") return verify(token, JWT_REFRESH_KEY);
+    return verify(token, SECRETE_JWT);
   }
 
   public Decode(payload: string): any {

@@ -2,9 +2,9 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { injectable } from "tsyringe";
 import { prisma } from "@shared/infra/database/database";
 import { Plans} from "../dto/plans.dto";
-import { getPagination } from "@utils/util";
+import { getPagination } from "@core/utils/util";
 import { BaseError } from "@errors/Base";
-import { PAGE_SIZE_DEFAULT } from "@config/index";
+import { PAGE_SIZE_DEFAULT } from "@core/config/index";
 
 @injectable()
 export class PlansService implements Plans {

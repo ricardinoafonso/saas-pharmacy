@@ -9,6 +9,7 @@ export interface ISubscription {
     id: number,
     data: ISubscriptions
   ): Promise<Prisma.subscriptionCreateManyInput>;
+  findOne(where: Prisma.subscriptionWhereInput): Promise<ISubscriptions>;
 }
 export interface ISubscriptionController {
   create(req: Request, res: Response): Promise<Response>;

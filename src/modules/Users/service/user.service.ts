@@ -4,8 +4,8 @@ import { IStatus, IUser } from "../dto/user.dto";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { BaseError } from "@errors/Base";
 import { User } from "../dto/services.dto";
-import { getPagination } from "@utils/util";
-import { PAGE_SIZE_DEFAULT } from "@config/index";
+import { getPagination } from "@core/utils/util";
+import { PAGE_SIZE_DEFAULT } from "@core/config/index";
 
 @injectable()
 export class UserService implements User {

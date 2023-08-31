@@ -10,7 +10,8 @@
       "@config/*": ["config/*"],
       "@shared/*": ["shared/*"],
       "@utils/*": ["utils/*"],
-      "@errors/*": ["errors/*"]
+      "@errors/*": ["errors/*"],
+      "@core/*": ["core/*"]
     },
                       /* Conditions to set in addition to the resolver-specific defaults when resolving imports. */
      "resolveJsonModule": true,                        /* Enable importing .json files. */

@@ -3,7 +3,7 @@ import { KafkaConsumer } from "../../../../shared/infra/container/provider/kafka
 const accountUseCaseSendMailVerification = async () => {
   const consumer = new KafkaConsumer("APP_TEST_");
   await consumer.execute("SEND_MAIL", (message) => {
-    console.log(message.value.toString());
+    const { email, token, username } = JSON.parse(message.value.toString());
   });
 };
 

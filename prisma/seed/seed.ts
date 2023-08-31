@@ -37,7 +37,7 @@ async function Run(): Promise<void> {
       },
     });
     console.log(user, "[seed success]");
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
   }
 }

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { BaseError } from "@errors/Base";
-import { inject, singleton } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import { User } from "@modules/Users/dto/services.dto";
 import { JwtService } from "@shared/services/jwtService/jwtService.service";
 import { IUser } from "@modules/Users/dto/user.dto";
-import { EmployeesServices } from "@modules/employees/service/employees.service";
-import { EmployeesTypes } from "@modules/employees/dto/employees.dto";
+import { EmployeesServices } from "@modules/farmacia/employees/service/employees.service";
+import { EmployeesTypes } from "@modules/farmacia/employees/dto/employees.dto";
 
-@singleton()
+@injectable()
 export class Authorization {
   private User: User | EmployeesTypes;
   constructor(
@@ -39,7 +39,7 @@ export class Authorization {
       return payload;
     }
   }
-  public is(role: string[]) {
+  public is(role?: string[]) {
     const authorization = async (
       req: Request,
       res: Response,
@@ -47,6 +47,7 @@ export class Authorization {
     ) => {
       try {
         const user = await this.Decoder(req);
+        if(!role) return next();
         const roles = user?.features.map((r: string) => r);
         const checkUserHaveRoles = roles.some((r: string) => role.includes(r));
 

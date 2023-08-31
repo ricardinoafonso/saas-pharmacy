@@ -1,4 +1,4 @@
-export class BaseError  extends Error{
+export class BaseError extends Error {
   public readonly action?: string;
   public readonly statusCode?: number;
   public readonly errorLocationCode?: string;
@@ -11,14 +11,32 @@ export class BaseError  extends Error{
     action?: string,
     statusCode?: number,
     errorLocationCode?: string,
-    key?: string,
+    key?: string
   ) {
-    super(message)
-   // this.message = message;
+    super(message);
+    // this.message = message;
     this.stack = stack;
     this.action = action;
     this.statusCode = statusCode;
     this.errorLocationCode = errorLocationCode;
     this.key = key;
+  }
+}
+
+export class NotFound extends BaseError {
+  constructor(message: string, action: string) {
+    super(message, "", action, 404);
+  }
+}
+
+export class NotAuthorized extends BaseError {
+  constructor(message: string, action: string) {
+    super(message, "", action, 401);
+  }
+}
+
+export class BadRequest extends BaseError {
+  constructor(message: string, action: string) {
+    super(message, "", action, 400);
   }
 }

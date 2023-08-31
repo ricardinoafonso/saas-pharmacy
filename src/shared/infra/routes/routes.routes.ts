@@ -1,18 +1,19 @@
 import keyRouter from '@modules/Keys/routes/kyes.routes';
-import companyRouter from '@modules/company/routes/company.routes';
+import companyRouter from '@modules/farmacia/company/routes/company.routes';
 import limitRouter from '@modules/limit/routes/limit.routes';
 import plansRouter from '@modules/plans/routes/plans.routes';
 import SwaggerUI from 'swagger-ui-express';
 import docs from './../../../swagger.json';
 import authRoute from '@modules/Users/routes/auth.routes';
 import SubscriptionRouter from '@modules/subscription/routes/subscription.routes';
-import productRouter from '@modules/product/routes/product.routes';
-import CategoriesRouter from '@modules/categories/routes/categories.routes';
-import salesRouter from '@modules/sales/routes/sales.routes';
+import productRouter from '@modules/farmacia/product/routes/product.routes';
+import CategoriesRouter from '@modules/farmacia/categories/routes/categories.routes';
+import salesRouter from '@modules/farmacia/sales/routes/sales.routes';
 import userRoute from '@modules/Users/routes/user.routes';
-import { employeesRouter } from '@modules/employees/routes/employees.routes';
+import { employeesRouter } from '@modules/farmacia/employees/routes/employees.routes';
 import refreshRouter from '@modules/token/routes/token.routes';
-const LoadRoutes = (app: any) => {
+import { Application } from 'express';
+const LoadRoutes = (app: Application) => {
   
   app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(docs));
   app.use('/api/v1/user/auth', authRoute);

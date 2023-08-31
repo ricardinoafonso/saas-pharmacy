@@ -1,28 +1,32 @@
 import "reflect-metadata";
 import "dotenv/config";
-import "express-async-errors"
+import "express-async-errors";
 import Express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import "@shared/infra/container/index";
 
-import Logger from "@config/logger";
+import Logger from "@core/config/logger";
 import { BaseError } from "@errors/Base";
 import LoadRoutes from "../routes/routes.routes";
+import { Application } from "express";
 
-const App = Express();
+const App: Application = Express();
 
-App.use(cors({
-  origin: '*'
-}))
+App.use(
+  cors({
+    origin: "*",
+  })
+);
 
 App.use(Express.urlencoded({ extended: true }));
 App.use(Express.json());
 
-LoadRoutes(App)
+LoadRoutes(App);
+
 
 App.use((_err: Error, req: Request, res: Response, next: NextFunction) => {
-  if(res.get("env") != 'production'){
-    Logger.error(_err)
+  if (res.get("env") != "production") {
+    Logger.error(_err);
   }
   if (_err instanceof BaseError) {
     return res.status(_err.statusCode!).json({
@@ -36,8 +40,11 @@ App.use((_err: Error, req: Request, res: Response, next: NextFunction) => {
   }
   return res
     .status(500)
-    .json({ message: "Internal server Error ", status: 500, error: _err.message });
+    .json({
+      message: "Internal server Error ",
+      status: 500,
+      error: _err.message,
+    });
 });
 
-
-export  {App};
+export { App };

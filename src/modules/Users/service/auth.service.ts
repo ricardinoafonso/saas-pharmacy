@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { IAuth, IAuthUser, ISignup, User } from "../dto/services.dto";
 import { JwtService } from "@shared/services/jwtService/jwtService.service";
 import { BaseError } from "@errors/Base";
-import { hashPassword, passwordCompare } from "@utils/util";
+import { hashPassword, passwordCompare } from "@core/utils/util";
 import { IUser } from "../dto/user.dto";
 import { TokenService } from "@modules/token/service/token.service";
 import { IDateProvider } from "@shared/infra/container/provider/DataProvider/dto";

@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { Keys, IkeysDto } from "../dto/keys.dto";
 import { prisma } from "@shared/infra/database/database";
 import { injectable } from "tsyringe";
-import { getPagination } from "@utils/util";
+import { getPagination } from "@core/utils/util";
 import crypto from "crypto";
 
 @injectable()
