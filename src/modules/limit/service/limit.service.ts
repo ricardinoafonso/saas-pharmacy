@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { prisma } from "@shared/infra/database/database";
 import { getPagination } from "@core/utils/util";
-import { BaseError } from "@errors/Base";
+import { NotFound } from "@errors/Base";
 import { injectable } from "tsyringe";
 import { IlimitCreateInput, Limit } from "../dto/limit.dto";
 
@@ -38,15 +38,7 @@ export class LimitService implements Limit {
     const limit = await this.LimitRepository.limit.findFirst({
       where: { id },
     });
-    if (!limit)
-      throw new BaseError(
-        "limit not found",
-        new Error().stack,
-        "verifica o id",
-        404,
-        "service:limit:findone",
-        "id"
-      );
+    if (!limit) throw new NotFound("limit not found", new Error().stack);
     return limit;
   }
 }

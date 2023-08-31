@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BaseError } from "@errors/Base";
+import { NotAuthorized } from "@errors/Base";
 import { inject, injectable } from "tsyringe";
 import { User } from "@modules/Users/dto/services.dto";
 import { JwtService } from "@shared/services/jwtService/jwtService.service";
@@ -24,13 +24,9 @@ export class Authorization {
       if (!this.User) {
         this.User = await this.employeesService.where({ id: parseInt(id) });
         if (!this.User) {
-          throw new BaseError(
-            "usuario sem subscricao,ou desactivado",
-            new Error().stack,
-            "Renova sua Subscrisao, ou contacte o suporte !",
-            423,
-            "auth:middleware:user",
-            "Features"
+          throw new NotAuthorized(
+            "user without subscription, or deactivated",
+            "Renew your Subscription, or contact support!"
           );
         }
       }
@@ -47,44 +43,27 @@ export class Authorization {
     ) => {
       try {
         const user = await this.Decoder(req);
-        if(!role) return next();
+        if (!role) return next();
         const roles = user?.features.map((r: string) => r);
         const checkUserHaveRoles = roles.some((r: string) => role.includes(r));
 
         if (checkUserHaveRoles) {
           return next();
         }
-        throw new BaseError(
-          "usuario nao authorized , nao tens permissao completar essa acao!",
-          new Error().stack,
-          "authorization",
-          401,
-          "shared:authorization",
+        throw new NotAuthorized(
+          "non-authorized user, you do not have permission to complete this action!",
           "authorization"
         );
       } catch (error: any) {
         if (error.stack.includes("TokenExpiredError")) {
           next(
-            new BaseError(
+            new NotAuthorized(
               "Token expirado por favor inicia sessao novamente",
-              "",
-              "authorization",
-              401,
-              "shared:authorization",
-              "authorization"
+              ""
             )
           );
         }
-        next(
-          new BaseError(
-            error.message,
-            error.stack,
-            "authorization",
-            401,
-            "shared:authorization",
-            "authorization"
-          )
-        );
+        next(new NotAuthorized(error.message, error.stack));
       }
     };
 
